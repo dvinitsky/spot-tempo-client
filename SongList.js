@@ -1,14 +1,15 @@
 import React from "react";
 import Song from "./Song";
 import styled from "styled-components";
-import { Text } from "react-native";
+import { Text, FlatList } from "react-native";
 
 const Header = styled.View`
-  text-align: center;
   font-size: 20px;
+  padding: 10px;
 `;
 const List = styled.View`
-  width: 350px;
+  width: 50%;
+  height: 68%;
 `;
 
 export const SongList = ({ label, shiftSong, listName, songs }) => (
@@ -16,15 +17,17 @@ export const SongList = ({ label, shiftSong, listName, songs }) => (
     <Header>
       <Text>{label}</Text>
     </Header>
-    {songs.map((song, index) => (
-      <Song
-        key={index}
-        song={song}
-        shiftSong={shiftSong}
-        listName={listName}
-        index={index}
-      />
-    ))}
+    <FlatList
+      data={songs.map((song, index) => ({ song, key: index.toString() }))}
+      renderItem={(item, index) => (
+        <Song
+          song={item.item.song}
+          shiftSong={shiftSong}
+          listName={listName}
+          index={index}
+        />
+      )}
+    />
   </List>
 );
 

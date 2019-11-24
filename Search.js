@@ -2,41 +2,54 @@ import React, { useState, useEffect } from "react";
 import { SongList } from "./SongList";
 import styled from "styled-components";
 import Axios from "axios";
-import { Text, Button } from "react-native";
 import { serverUrl } from "./constants/constants";
 
 const Wrapper = styled.View`
   display: flex;
-  flex-direction: column;
   align-items: center;
+  margin-top: 30px;
 `;
 const Title = styled.Text`
   font-size: 25px;
 `;
 const HeaderText = styled.Text`
   text-align: center;
-  color: white;
   margin: 20px 60px;
+`;
+const SearchArea = styled.View`
+  display: flex
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 55%;
 `;
 const SearchBar = styled.TextInput`
   font-size: 24px;
-  margin-right: 20px;
-`;
-const SearchArea = styled.View`
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
+  border: 1px solid black;
+  margin: 5px;
+  width: 120px;
+  padding: 12px;
 `;
 const ListsContainer = styled.View`
   display: flex;
+  flex-direction: row;
   justify-content: center;
+  width: 100%;
 `;
+const SearchButton = styled.Button`
+  padding: 15px;
+`;
+const SearchText = styled.Text`
+  padding: 15px;
+`;
+const Loading = styled.Text``;
 
 const Search = () => {
   const [destinationSongs, setDestinationSongs] = useState([]);
   const [originSearchResults, setOriginSearchResults] = useState([]);
   const [bpm, setBpm] = useState();
   const [isLoading, setIsLoading] = useState();
+  const [text, setText] = useState();
 
   useEffect(() => {
     const getInitialSongs = async () => {
@@ -67,17 +80,17 @@ const Search = () => {
   }, []);
 
   const handleSearch = async () => {
-    const newBpm = document.getElementById("searchbar").value;
-
     const matchingTracks = await Axios.post(`${serverUrl}/getMatchingSongs`, {
-      bpm: newBpm,
+      bpm: text,
       start: 0,
       end: 100
     });
 
-    setBpm(newBpm);
+    setBpm(text);
     setOriginSearchResults(matchingTracks.data);
   };
+
+  const handleChange = text => setText(text);
 
   const addSongToDestination = async song => {
     try {
@@ -125,19 +138,17 @@ const Search = () => {
         <SearchBar
           id="searchbar"
           type="text"
-          onKeyDown={e => {
-            if (e.keyCode === 13) {
-              handleSearch();
-            }
-          }}
+          onChangeText={handleChange}
+          placeholder="BPM"
+          placeholderTextColor="white"
         />
-        <Button title="Search" onClick={handleSearch}>
-          <Text>Search</Text>
-        </Button>
+        <SearchButton title="Search" onPress={handleSearch}>
+          <SearchText>Search</SearchText>
+        </SearchButton>
       </SearchArea>
 
       {isLoading ? (
-        <Text>Loading...</Text>
+        <Loading>Loading...</Loading>
       ) : (
         <ListsContainer>
           <SongList

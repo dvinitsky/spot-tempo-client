@@ -7,8 +7,11 @@ import { serverUrl } from "./constants/constants";
 import { WebView } from "react-native-webview";
 import { AuthSession } from "expo";
 
+const AppWrapper = styled.View`
+  background-color: #9ec99c;
+`;
 const Loading = styled.Text`
-  margin-top: 30px;
+  margin-top: 35px;
 `;
 
 const App = () => {
@@ -77,10 +80,18 @@ const App = () => {
   }
 
   if (isLoading) {
-    return <Loading>Loading...</Loading>;
+    return (
+      <AppWrapper>
+        <Loading>Loading...</Loading>
+      </AppWrapper>
+    );
   }
 
-  return accessToken ? <Search /> : null;
+  return accessToken ? (
+    <AppWrapper>
+      <Search />
+    </AppWrapper>
+  ) : null;
 };
 
 export default App;

@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Text } from "react-native";
-import { getUrlParams, authRedirect } from "./helpers/helpers";
+import styled from "styled-components";
+import { getAuthUrl } from "./helpers/helpers";
 import Search from "./Search";
 import Axios from "axios";
 import { serverUrl } from "./constants/constants";
+import { WebView } from "react-native-webview";
+import { AuthSession } from "expo";
+
+const Loading = styled.Text`
+  margin-top: 30px;
+`;
 
 const App = () => {
   const [accessToken, setAccessToken] = useState();
   const [isLoading, setIsLoading] = useState();
+  const [authUrl, setAuthUrl] = useState();
 
   useEffect(() => {
     const loginHandler = async () => {
@@ -26,23 +33,37 @@ const App = () => {
         return;
       }
 
-      const { code, state } = getUrlParams();
+      const redirectUrl = AuthSession.getRedirectUrl();
+      const { data: authParams } = await Axios.get(
+        `${serverUrl}/getAuthParams`
+      );
+
+      const result = await AuthSession.startAsync({
+        authUrl: `https://accounts.spotify.com/authorize?${authParams}&redirect_uri=${redirectUrl}`
+      });
+
+      const { code, state } = result.params;
       try {
         if (code && state) {
-          const response = await Axios.post("/login", {
+          const response = await Axios.post(`${serverUrl}/login`, {
             code,
-            state
+            state,
+            redirect_uri: redirectUrl
           });
           if (response.data.mismatch) {
-            return await authRedirect();
+            const url = await getAuthUrl();
+            setAuthUrl(url);
+            return;
           }
 
           setAccessToken(response.data);
         } else {
-          await authRedirect();
+          const url = await getAuthUrl();
+          setAuthUrl(url);
         }
       } catch (error) {
-        await authRedirect();
+        const url = await getAuthUrl();
+        setAuthUrl(url);
       }
 
       setIsLoading(false);
@@ -51,8 +72,12 @@ const App = () => {
     loginHandler();
   }, []);
 
+  if (authUrl) {
+    return <WebView source={{ uri: authUrl }} />;
+  }
+
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <Loading>Loading...</Loading>;
   }
 
   return accessToken ? <Search /> : null;

@@ -11,18 +11,18 @@ const SongItem = styled.View`
   justify-content: space-between;
   align-items: center;
 `;
-const AddRemove = styled.View`
+const AddRemove = styled.Text`
   font-size: 25px;
   margin-left: 6px;
   margin-bottom: 2px;
 `;
-const SongInfo = styled.View`
+const SongInfo = styled.Text`
   margin: 0 12px;
 `;
 const SongName = styled.Text`
   font-weight: 600;
 `;
-const Bpm = styled.View`
+const Bpm = styled.Text`
   display: flex;
   text-align: center;
   width: 35px;

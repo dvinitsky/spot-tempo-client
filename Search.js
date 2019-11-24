@@ -2,16 +2,18 @@ import React, { useState, useEffect } from "react";
 import { SongList } from "./SongList";
 import styled from "styled-components";
 import Axios from "axios";
+import { Text, Button } from "react-native";
+import { serverUrl } from "./constants/constants";
 
 const Wrapper = styled.View`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
-const Title = styled.View`
+const Title = styled.Text`
   font-size: 25px;
 `;
-const HeaderText = styled.View`
+const HeaderText = styled.Text`
   text-align: center;
   color: white;
   margin: 20px 60px;
@@ -40,12 +42,15 @@ const Search = () => {
     const getInitialSongs = async () => {
       setIsLoading(true);
 
-      const firstOriginBatch = await Axios.post("/getNextOriginSongs", {
-        start: 0,
-        end: 100
-      });
+      const firstOriginBatch = await Axios.post(
+        `${serverUrl}/getNextOriginSongs`,
+        {
+          start: 0,
+          end: 100
+        }
+      );
       const firstDestinationBatch = await Axios.post(
-        "/getNextDestinationSongs",
+        `${serverUrl}/getNextDestinationSongs`,
         {
           start: 0,
           end: 100
@@ -64,7 +69,7 @@ const Search = () => {
   const handleSearch = async () => {
     const newBpm = document.getElementById("searchbar").value;
 
-    const matchingTracks = await Axios.post("/getMatchingSongs", {
+    const matchingTracks = await Axios.post(`${serverUrl}/getMatchingSongs`, {
       bpm: newBpm,
       start: 0,
       end: 100
@@ -76,7 +81,7 @@ const Search = () => {
 
   const addSongToDestination = async song => {
     try {
-      await Axios.post("/addTrack", {
+      await Axios.post(`${serverUrl}/addTrack`, {
         trackId: song.uri
       });
       setDestinationSongs([...destinationSongs, song]);
@@ -90,7 +95,7 @@ const Search = () => {
 
   const removeSongFromDestination = async (song, position) => {
     try {
-      await Axios.post("/removeTrack", {
+      await Axios.post(`${serverUrl}/removeTrack`, {
         trackId: song.uri,
         position
       });
@@ -126,11 +131,13 @@ const Search = () => {
             }
           }}
         />
-        <button onClick={handleSearch}>Search</button>
+        <Button title="Search" onClick={handleSearch}>
+          <Text>Search</Text>
+        </Button>
       </SearchArea>
 
       {isLoading ? (
-        <div>Loading...</div>
+        <Text>Loading...</Text>
       ) : (
         <ListsContainer>
           <SongList

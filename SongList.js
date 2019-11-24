@@ -1,6 +1,7 @@
 import React from "react";
 import Song from "./Song";
 import styled from "styled-components";
+import { Text } from "react-native";
 
 const Header = styled.View`
   text-align: center;
@@ -12,7 +13,9 @@ const List = styled.View`
 
 export const SongList = ({ label, shiftSong, listName, songs }) => (
   <List>
-    <Header>{label}</Header>
+    <Header>
+      <Text>{label}</Text>
+    </Header>
     {songs.map((song, index) => (
       <Song
         key={index}

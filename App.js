@@ -3,9 +3,11 @@ import styled from "styled-components";
 import { getAuthUrl } from "./helpers/helpers";
 import Search from "./Search";
 import Axios from "axios";
-import { serverUrl } from "./constants/constants";
 import { WebView } from "react-native-webview";
 import { AuthSession } from "expo";
+
+import getEnvVars from "./environment";
+const { serverUrl } = getEnvVars();
 
 const AppWrapper = styled.View`
   background-color: #9ec99c;

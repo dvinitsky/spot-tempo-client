@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { SongList } from "./SongList";
 import styled from "styled-components";
 import Axios from "axios";
-import { serverUrl } from "./constants/constants";
+
+import getEnvVars from "./environment";
+const { serverUrl } = getEnvVars();
 
 const Wrapper = styled.View`
   display: flex;

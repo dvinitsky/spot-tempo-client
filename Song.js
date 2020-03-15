@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { View } from "react-native";
 
-const SongItem = styled.View`
+const SongItem = styled.TouchableHighlight`
   margin: 20px;
   padding: 10px;
   border-radius: 20px;
@@ -29,13 +30,15 @@ const Bpm = styled.Text`
 `;
 
 export const Song = ({ listName, shiftSong, song, index }) => (
-  <SongItem listName={listName} onClick={() => shiftSong(song, index)}>
-    <AddRemove>{listName === "searchResults" ? "+" : "-"}</AddRemove>
+  <SongItem listName={listName} onPress={() => shiftSong(song, index)}>
+    <View>
+      <AddRemove>{listName === "searchResults" ? "+" : "-"}</AddRemove>
 
-    <SongInfo>
-      <SongName>{song.name}</SongName> by {song.album.artists[0].name}
-    </SongInfo>
-    <Bpm>{song.tempo} BPM</Bpm>
+      <SongInfo>
+        <SongName>{song.name}</SongName> by {song.album.artists[0].name}
+      </SongInfo>
+      <Bpm>{song.tempo} BPM</Bpm>
+    </View>
   </SongItem>
 );
 

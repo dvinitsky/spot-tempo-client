@@ -19,15 +19,15 @@ export const SongList = ({ label, shiftSong, listName, songs }) => (
     </Header>
     <FlatList
       data={songs.map((song, index) => ({ song, key: index.toString() }))}
-      renderItem={(item, index) => (
-        <Song
-          song={item.item.song}
+      renderItem={({item, index}) => (
+       <Song
+          song={item.song}
           shiftSong={shiftSong}
           listName={listName}
           index={index}
         />
       )}
-    />
+      />
   </List>
 );
 
